@@ -10,6 +10,6 @@ public class App
     {
         CoffeeType latte = CoffeeType.LATTE;
         OrderingSystem orderingSystem = new OrderingSystem();
-        orderingSystem.selectCoffee(latte);
+        orderingSystem.processOrder(latte);
     }
 }

@@ -1,33 +1,46 @@
 package org.kaliada;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class OrderingSystem {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private CoffeeMachine coffeeMachine;
+    private CoffeeMaker coffeeMaker;
     private MoneyReceiver moneyReceiver;
     private double amount;
-    private CoffeeType selectedCoffee;
+    private boolean readyForOrder;
 
     public OrderingSystem() {
         moneyReceiver = new MoneyReceiver();
-        coffeeMachine = new CoffeeMachine(this);
+        coffeeMaker = new CoffeeMaker();
+        readyForOrder = true;
     }
 
-    public void selectCoffee(CoffeeType selectedCoffee){
-        amount = moneyReceiver.receiveMoney(selectedCoffee.getPrice());
-        this.selectedCoffee = selectedCoffee;
-        coffeeMachine.orderCoffee(selectedCoffee);
-    }
-
-    public void publicize(int priority, String message){
-        if (priority == 0){
-            LOGGER.log(Level.TRACE, message) ;
-        }else {
-            moneyReceiver.returnMoney(amount);
-            LOGGER.log(Level.WARN, message);
+    public void processOrder(CoffeeType selectedCoffee){
+        if (!readyForOrder){
+            return;
         }
+        readyForOrder = false;
+        amount = moneyReceiver.receiveMoney(selectedCoffee.getPrice());
+        if (amount < selectedCoffee.getPrice()){
+            moneyReceiver.returnMoney(amount);
+            readyForOrder = true;
+            return;
+        }else if (amount > selectedCoffee.getPrice()){
+            double change = amount - selectedCoffee.getPrice();
+            moneyReceiver.returnMoney(change);
+            amount -= change;
+        }
+        Coffee coffee;
+        try{
+            coffee = coffeeMaker.orderCoffee(selectedCoffee);
+        }catch (UnsupportedOperationException e){
+            readyForOrder = true;
+            moneyReceiver.returnMoney(amount);
+            return;
+        }
+        giveOutCoffee(coffee);
+        readyForOrder = true;
+    }
+
+    private void giveOutCoffee(Coffee coffee){
+        System.out.println(coffee.toString() + " is ready");
+        //give coffee to customer
     }
 }

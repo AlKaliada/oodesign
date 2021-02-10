@@ -1,12 +1,12 @@
 package org.kaliada;
 
-public class Ingredients {
+public class IngredientsStorage {
     private int chocolate;
     private int coffee;
     private int milk;
     private int water;
 
-    public Ingredients() {
+    public IngredientsStorage() {
         chocolate = 500;
         coffee = 500;
         milk = 500;
