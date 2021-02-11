@@ -14,10 +14,10 @@ public class CoffeeMaker {
                 coffee.makeCoffee();
                 return coffee;
             }else {
-                throw new UnsupportedOperationException("Problems with making coffee");
+                throw new IllegalArgumentException("Problems with making coffee");
             }
         }else {
-            throw new UnsupportedOperationException(String.format("No ingredients for %s", type));
+            throw new IllegalArgumentException(String.format("No ingredients for %s", type));
         }
     }
 

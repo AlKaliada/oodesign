@@ -3,7 +3,7 @@ package org.kaliada;
 public class OrderingSystem {
     private CoffeeMaker coffeeMaker;
     private MoneyReceiver moneyReceiver;
-    private double amount;
+    private double amountAcceptedMoney;
     private boolean readyForOrder;
 
     public OrderingSystem() {
@@ -17,22 +17,22 @@ public class OrderingSystem {
             return;
         }
         readyForOrder = false;
-        amount = moneyReceiver.receiveMoney(selectedCoffee.getPrice());
-        if (amount < selectedCoffee.getPrice()){
-            moneyReceiver.returnMoney(amount);
+        amountAcceptedMoney = moneyReceiver.receiveMoney(selectedCoffee.getPrice());
+        if (amountAcceptedMoney < selectedCoffee.getPrice()){
+            moneyReceiver.returnMoney(amountAcceptedMoney);
             readyForOrder = true;
             return;
-        }else if (amount > selectedCoffee.getPrice()){
-            double change = amount - selectedCoffee.getPrice();
+        }else if (amountAcceptedMoney > selectedCoffee.getPrice()){
+            double change = amountAcceptedMoney - selectedCoffee.getPrice();
             moneyReceiver.returnMoney(change);
-            amount -= change;
+            amountAcceptedMoney -= change;
         }
         Coffee coffee;
         try{
             coffee = coffeeMaker.orderCoffee(selectedCoffee);
-        }catch (UnsupportedOperationException e){
+        }catch (IllegalArgumentException e){
             readyForOrder = true;
-            moneyReceiver.returnMoney(amount);
+            moneyReceiver.returnMoney(amountAcceptedMoney);
             return;
         }
         giveOutCoffee(coffee);
